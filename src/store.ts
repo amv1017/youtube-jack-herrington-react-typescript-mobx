@@ -7,10 +7,10 @@ export interface Todo {
 }
 
 
-const removeTodo = (todos: Todo[], id: number): Todo[] =>
+const removeTodoMethod = (todos: Todo[], id: number): Todo[] =>
   todos.filter((todo) => todo.id !== id);
 
-const addTodo = (todos: Todo[], text: string): Todo[] => [
+const addTodoMethod = (todos: Todo[], text: string): Todo[] => [
   ...todos,
   {
     id: Math.max(0, Math.max(...todos.map(({ id }) => id))) + 1,
@@ -30,10 +30,19 @@ class Store {
     makeAutoObservable(this)
   }
 
-  addTodo() {
-    this.todos = addTodo(this.todos, this.newTodo)
-    this.newTodo = ""
+  load(url: string) {
+    fetch(url)
+    .then(res => res.json())
+    .then(data => this.todos = data)    
+  }
 
+  addTodo() {
+    this.todos = addTodoMethod(this.todos, this.newTodo)
+    this.newTodo = ""
+  }
+
+  removeTodo(id: number) {
+    this.todos = removeTodoMethod(this.todos, id)
   }
 }
 
